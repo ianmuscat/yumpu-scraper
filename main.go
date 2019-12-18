@@ -67,10 +67,10 @@ func main() {
 
 	json.Unmarshal(b, &d)
 
+	var wg sync.WaitGroup
 	for _, p := range d.Document.Pages {
 		pURL := fmt.Sprintf("%s%s?%s", d.Document.BasePath, p.Images["large"], p.Qss["large"])
 
-		var wg sync.WaitGroup
 		wg.Add(1)
 
 		go func(p Page) {
@@ -98,7 +98,6 @@ func main() {
 			log.Printf("downloaded page %d", p.Number)
 			wg.Done()
 		}(p)
-		wg.Wait()
-
 	}
+	wg.Wait()
 }
